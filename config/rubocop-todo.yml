@@ -26,9 +26,6 @@ Blocks:
 CaseIndentation:
   Enabled: false
 
-ClassMethods:
-  Enabled: false
-
 CollectionMethods:
   Enabled: false
 
