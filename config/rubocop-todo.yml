@@ -35,9 +35,6 @@ CollectionMethods:
 ColonMethodCall:
   Enabled: false
 
-DefWithoutParentheses:
-  Enabled: false
-
 DotPosition:
   Enabled: false
 
