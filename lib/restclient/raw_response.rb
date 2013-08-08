@@ -15,7 +15,7 @@ module RestClient
 
     attr_reader :file
 
-    def initialize tempfile, net_http_res, args
+    def initialize(tempfile, net_http_res, args)
       @net_http_res = net_http_res
       @args = args
       @file = tempfile

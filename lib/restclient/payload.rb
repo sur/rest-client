@@ -81,7 +81,7 @@ module RestClient
         result
       end
 
-      def flatten_params_array value, calculated_key
+      def flatten_params_array(value, calculated_key)
         result = []
         value.each do |elem|
           if elem.is_a? Hash
@@ -146,7 +146,7 @@ module RestClient
       end
 
       # for UrlEncoded escape the keys
-      def handle_key key
+      def handle_key(key)
         URI.escape(key.to_s, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
       end
 
@@ -219,7 +219,7 @@ module RestClient
       end
 
       # for Multipart do not escape the keys
-      def handle_key key
+      def handle_key(key)
         key
       end
 

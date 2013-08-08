@@ -63,7 +63,7 @@ module RestClient
 
   # Compatibility : make the Response act like a Net::HTTPResponse when needed
   module ResponseForException
-    def method_missing symbol, *args
+    def method_missing(symbol, *args)
       if net_http_res.respond_to? symbol
         warn "[warning] The response contained in an RestClient::Exception is now a RestClient::Response instead of a Net::HTTPResponse, please update your code"
         net_http_res.send symbol, *args
@@ -83,7 +83,7 @@ module RestClient
     attr_accessor :response
     attr_writer   :message
 
-    def initialize response = nil, initial_response_code = nil
+    def initialize(response = nil, initial_response_code = nil)
       @response = response
       @message = nil
       @initial_response_code = initial_response_code

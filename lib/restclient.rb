@@ -99,7 +99,7 @@ module RestClient
   # Setup the log for RestClient calls.
   # Value should be a logger but can can be stdout, stderr, or a filename.
   # You can also configure logging by the environment variable RESTCLIENT_LOG.
-  def self.log= log
+  def self.log=(log)
     @@log = create_log log
   end
 
@@ -111,19 +111,19 @@ module RestClient
 
   # Create a log that respond to << like a logger
   # param can be 'stdout', 'stderr', a string (then we will log to that file) or a logger (then we return it)
-  def self.create_log param
+  def self.create_log(param)
     if param
       if param.is_a? String
         if param == 'stdout'
           stdout_logger = Class.new do
-            def << obj
+            def <<(obj)
               STDOUT.puts obj
             end
           end
           stdout_logger.new
         elsif param == 'stderr'
           stderr_logger = Class.new do
-            def << obj
+            def <<(obj)
               STDERR.puts obj
             end
           end
@@ -132,7 +132,7 @@ module RestClient
           file_logger = Class.new do
             attr_writer :target_file
 
-            def << obj
+            def <<(obj)
               File.open(@target_file, 'a') { |f| f.puts obj }
             end
           end
@@ -158,7 +158,7 @@ module RestClient
 
   # Add a Proc to be called before each request in executed.
   # The proc parameters will be the http request and the request params.
-  def self.add_before_execution_proc &proc
+  def self.add_before_execution_proc(&proc)
     @@before_execution_procs << proc
   end
 

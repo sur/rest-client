@@ -8,7 +8,7 @@ describe RestClient::AbstractResponse do
 
     attr_accessor :size
 
-    def initialize net_http_res, args
+    def initialize(net_http_res, args)
       @net_http_res = net_http_res
       @args = args
     end

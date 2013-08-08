@@ -31,7 +31,7 @@ module RestClient
 
     # Return the default behavior corresponding to the response code:
     # the response itself for code in 200..206, redirection for 301, 302 and 307 in get and head cases, redirection for 303 and an exception in other cases
-    def return! request = nil, result = nil, & block
+    def return!(request = nil, result = nil, & block)
       if (200..207).include? code
         self
       elsif [301, 302, 307].include? code
@@ -60,7 +60,7 @@ module RestClient
     end
 
     # Follow a redirection
-    def follow_redirection request = nil, result = nil, & block
+    def follow_redirection(request = nil, result = nil, & block)
       url = headers[:location]
       if url !~ /^http/
         url = URI.parse(args[:url]).merge(url).to_s
@@ -92,7 +92,7 @@ module RestClient
     private
 
     # Parse a cookie value and return its content in an Hash
-    def parse_cookie cookie_content
+    def parse_cookie(cookie_content)
       out = {}
       CGI::Cookie::parse(cookie_content).each do |key, cookie|
         unless ['expires', 'path'].include? key

@@ -36,7 +36,7 @@ module RestClient
       new(args).execute(& block)
     end
 
-    def initialize args
+    def initialize(args)
       @method = args[:method] or raise ArgumentError, "must pass :method"
       @headers = args[:headers] || {}
       if args[:url]
@@ -63,7 +63,7 @@ module RestClient
       @args = args
     end
 
-    def execute & block
+    def execute(& block)
       uri = parse_url_with_auth(url)
       transmit uri, net_http_request_class(method).new(uri.request_uri, processed_headers), payload, & block
     ensure
@@ -71,7 +71,7 @@ module RestClient
     end
 
     # Extract the query parameters and append them to the url
-    def process_url_params url, headers
+    def process_url_params(url, headers)
       url_params = {}
       headers.delete_if do |key, value|
         if 'params' == key.to_s.downcase && value.is_a?(Hash)
@@ -89,7 +89,7 @@ module RestClient
       end
     end
 
-    def make_headers user_headers
+    def make_headers(user_headers)
       unless @cookies.empty?
         user_headers[:cookie] = @cookies.map { |(key, val)| "#{key.to_s}=#{CGI::unescape(val.to_s)}" }.sort.join('; ')
       end
@@ -143,7 +143,7 @@ module RestClient
       end
     end
 
-    def transmit uri, req, payload, & block
+    def transmit(uri, req, payload, & block)
       setup_credentials req
 
       net = net_http_class.new(uri.host, uri.port)
@@ -231,7 +231,7 @@ module RestClient
       http_response
     end
 
-    def process_result res, & block
+    def process_result(res, & block)
       if @raw_response
         # We don't decode raw requests
         response = RawResponse.new(@tf, res, args)
@@ -247,7 +247,7 @@ module RestClient
 
     end
 
-    def self.decode content_encoding, body
+    def self.decode(content_encoding, body)
       if (!body) || body.empty?
         body
       elsif content_encoding == 'gzip'
@@ -275,7 +275,7 @@ module RestClient
       end
     end
 
-    def log_response res
+    def log_response(res)
       if RestClient.log
         size = @raw_response ? File.size(@tf.path) : (res.body.nil? ? 0 : res.body.size)
         RestClient.log << "# => #{res.code} #{res.class.to_s.gsub(/^Net::HTTP/, '')} | #{(res['Content-type'] || '').gsub(/;.*$/, '')} #{size} bytes\n"
@@ -283,7 +283,7 @@ module RestClient
     end
 
     # Return a hash of headers whose keys are capitalized strings
-    def stringify_headers headers
+    def stringify_headers(headers)
       headers.inject({}) do |result, (key, value)|
         if key.is_a? Symbol
           key = key.to_s.split(/_/).map { |w| w.capitalize }.join('-')
@@ -317,13 +317,13 @@ module MIME
   class Types
 
     # Return the first found content-type for a value considered as an extension or the value itself
-    def type_for_extension ext
+    def type_for_extension(ext)
       candidates = @extension_index[ext]
       candidates.empty? ? ext : candidates[0].content_type
     end
 
     class << self
-      def type_for_extension ext
+      def type_for_extension(ext)
         @__types__.type_for_extension ext
       end
     end
