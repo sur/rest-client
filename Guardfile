@@ -15,6 +15,7 @@ guard :rspec do
   watch(%r{^lib/restclient/(.+)\.rb$}) { |m| "spec/unit/#{m[1]}_spec.rb" }
   watch(%r{^lib/.+\.rb$})              { 'spec/integration' }
   watch('spec/spec_helper.rb')         { 'spec' }
+  watch('.rspec')                      { 'spec' }
   watch(%r{^spec/.+_spec\.rb$})
 end
 
