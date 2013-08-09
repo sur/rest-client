@@ -20,6 +20,7 @@ end
 
 guard :rubocop, cli: %w(-c config/rubocop.yml) do
   watch(%r{.+\.rb$})
-  watch(%r{^config/rubocop.*\.yml$}) { %w( lib spec ) }
+  watch(%r{^bin/})
+  watch(%r{^config/rubocop.*\.yml$}) { %w( bin lib spec ) }
   watch(%r{(?:.+/)?\.rubocop\.yml$}) { |m| File.dirname(m[0]) }
 end
