@@ -26,11 +26,12 @@ end
 
 config = YAML.load(File.read(ENV['HOME'] + "/.restclient")) rescue {}
 
-@url, @username, @password = if c = config[@url]
-  [c['url'], c['username'], c['password']]
-else
-  [@url, * ARGV]
-end
+@url, @username, @password =
+  if c = config[@url]
+    [c['url'], c['username'], c['password']]
+  else
+    [@url, * ARGV]
+  end
 
 usage("invalid url '#{@url}") unless @url =~ /^https?/
 usage("too few args") unless ARGV.size < 3
