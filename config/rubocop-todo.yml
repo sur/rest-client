@@ -38,16 +38,10 @@ DotPosition:
 Encoding:
   Enabled: false
 
-EndAlignment:
-  Enabled: false
-
 Eval:
   Enabled: false
 
 FavorSprintf:
-  Enabled: false
-
-FavorUnlessOverNegatedIf:
   Enabled: false
 
 HashSyntax:
