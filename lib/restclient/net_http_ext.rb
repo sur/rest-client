@@ -2,7 +2,7 @@ module Net
   class HTTP
 
   # Adding the patch method if it doesn't exist (rest-client issue: https://github.com/archiloque/rest-client/issues/79)
-  if !defined?(Net::HTTP::Patch)
+  unless defined?(Net::HTTP::Patch)
     # Code taken from this commit: https://github.com/ruby/ruby/commit/ab70e53ac3b5102d4ecbe8f38d4f76afad29d37d#lib/net/http.rb
     class Protocol
       # Sends a PATCH request to the +path+ and gets a response,
