@@ -80,13 +80,15 @@ module RestClient
   # For example, the entire result body (which is
   # probably an HTML error page) is e.response.
   class Exception < RuntimeError
+    attr_accessor :options
     attr_accessor :response
     attr_writer   :message
 
-    def initialize response = nil, initial_response_code = nil
+    def initialize response = nil, initial_response_code = nil, options = {}
       @response = response
       @message = nil
       @initial_response_code = initial_response_code
+      @options = options
 
       # compatibility: this make the exception behave like a Net::HTTPResponse
       response.extend ResponseForException if response
@@ -114,7 +116,9 @@ module RestClient
     end
 
     def message
-      @message || self.class.name
+      ret = @message || self.class.name
+      ret << "-----------------------\n Request URL: #{options[:request_url].to_s}\n-----------------------" if options[:request_url]
+      ret
     end
 
   end
@@ -144,7 +148,7 @@ module RestClient
   STATUSES.each_pair do |code, message|
 
     # Compatibility
-    superclass = ([304, 401, 404].include? code) ? ExceptionWithResponse : RequestFailed
+    superclass = ([304, 400, 401, 404].include? code) ? ExceptionWithResponse : RequestFailed
     klass = Class.new(superclass) do
       send(:define_method, :message) {"#{http_code ? "#{http_code} " : ''}#{message}"}
     end

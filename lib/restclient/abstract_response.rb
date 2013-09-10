@@ -45,7 +45,7 @@ module RestClient
         args.delete :payload
         follow_redirection(request, result, & block)
       elsif Exceptions::EXCEPTIONS_MAP[code]
-        raise Exceptions::EXCEPTIONS_MAP[code].new(self, code)
+        raise Exceptions::EXCEPTIONS_MAP[code].new(self, code, {:request_url => request.url})
       else
         raise RequestFailed.new(self, code)
       end
