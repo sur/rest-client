@@ -116,15 +116,29 @@ module RestClient
     end
 
     def message
-      ret = @message || self.class.name
-      ret << "-----------------------\n Request URL: #{options[:request_url].to_s}\n-----------------------" if options[:request_url]
-      ret
+      @message || self.class.name
     end
 
   end
 
   # Compatibility
   class ExceptionWithResponse < Exception
+  end
+
+  # exception with Request Details
+  class ExceptionWithRequestDetails < Exception
+    def message
+      ret = ""
+      ret << response.code.to_i.to_s if response.respond_to?(:code)
+      ret << " "
+      ret << (response.nil? ? self.class.name : response.to_s)
+      if options[:request_url]
+        ret << "\n-------------------------------------------------"
+        ret << "\n Request URL: #{options[:request_url].to_s}"
+        ret << "\n-------------------------------------------------"
+      end
+      ret
+    end
   end
 
   # The request failed with an error code not managed by the code
@@ -148,10 +162,16 @@ module RestClient
   STATUSES.each_pair do |code, message|
 
     # Compatibility
-    superclass = ([304, 400, 401, 404].include? code) ? ExceptionWithResponse : RequestFailed
-    klass = Class.new(superclass) do
-      send(:define_method, :message) {"#{http_code ? "#{http_code} " : ''}#{message}"}
+    if [400].include?(code)
+      superclass = ExceptionWithRequestDetails
+      klass = Class.new(superclass)
+    else
+      superclass = ([304, 401, 404].include? code) ? ExceptionWithResponse : RequestFailed
+      klass = Class.new(superclass) do
+        send(:define_method, :message) {"#{http_code ? "#{http_code} " : ''}#{message}"}
+      end
     end
+
     klass_constant = const_set message.delete(' \-\''), klass
     Exceptions::EXCEPTIONS_MAP[code] = klass_constant
   end
