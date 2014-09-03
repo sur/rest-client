@@ -206,10 +206,10 @@ module RestClient
       raise RestClient::RequestTimeout
     end
 
-    def net_connect(net, req, payload, @block_response, & block)
+    def net_connect(net, req, payload, block_response, & block)
       net.start do |http|
-        if @block_response
-          http.request(req, payload ? payload.to_s : nil, & @block_response)
+        if block_response
+          http.request(req, payload ? payload.to_s : nil, & block_response)
         else
           res = http.request(req, payload ? payload.to_s : nil) { |http_response| fetch_body(http_response) }
           log_response res
