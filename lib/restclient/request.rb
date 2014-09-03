@@ -180,15 +180,20 @@ module RestClient
 
       log_request
 
-      net.start do |http|
-        if @block_response
-          http.request(req, payload ? payload.to_s : nil, & @block_response)
-        else
-          res = http.request(req, payload ? payload.to_s : nil) { |http_response| fetch_body(http_response) }
-          log_response res
-          process_result res, & block
+      tries = 0
+      ret = nil
+      while tries < 3
+        begin
+          ret = net_connect(net, req, payload, @block_response, & block)
+          tries = 3
+        rescue Exception => e
+          tries += 1
+          sleep(0.5)
         end
       end
+      ret = net_connect(net, req, payload, @block_response, & block) if ret.nil?
+      ret
+            
     rescue OpenSSL::SSL::SSLError => e
       if err_msg
         raise SSLCertificateNotVerified.new(err_msg)
@@ -199,6 +204,18 @@ module RestClient
       raise RestClient::ServerBrokeConnection
     rescue Timeout::Error
       raise RestClient::RequestTimeout
+    end
+
+    def net_connect(net, req, payload, @block_response, & block)
+      net.start do |http|
+        if @block_response
+          http.request(req, payload ? payload.to_s : nil, & @block_response)
+        else
+          res = http.request(req, payload ? payload.to_s : nil) { |http_response| fetch_body(http_response) }
+          log_response res
+          process_result res, & block
+        end
+      end
     end
 
     def setup_credentials(req)
