@@ -169,6 +169,8 @@ module RestClient
       net.ca_path = @ssl_ca_path if @ssl_ca_path
       net.read_timeout = @timeout if @timeout
       net.open_timeout = @open_timeout if @open_timeout
+      
+      net.use_ssl = uri.is_a?(URI::HTTPS) # reassigns and fixes SSL Handshake issued at app level with overridden use_ssl= method
 
       # disable the timeout if the timeout value is -1
       net.read_timeout = nil if @timeout == -1
