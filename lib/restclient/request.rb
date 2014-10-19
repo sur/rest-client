@@ -149,7 +149,7 @@ module RestClient
 
       net = net_http_class.new(uri.host, uri.port)
       net.use_ssl = uri.is_a?(URI::HTTPS)
-      net.ssl_version = @ssl_version
+      net.ssl_version = :TLSv1 # fixes SSL Handshake POODLE issue due to the SSLv3 protocol
       err_msg = nil
       if (@verify_ssl == false) || (@verify_ssl == OpenSSL::SSL::VERIFY_NONE)
         net.verify_mode = OpenSSL::SSL::VERIFY_NONE
